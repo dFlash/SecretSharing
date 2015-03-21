@@ -1,5 +1,7 @@
 package com.maliavin.algorithms;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -9,32 +11,34 @@ public class ShamirAlgo {
 
 	private int k;
 	private int n;
-	private int secret;
+	private BigInteger secret;
 	
 
-	public ShamirAlgo(int secret, int k, int n)
+	public ShamirAlgo(BigInteger secret, int k, int n)
 	{
 		this.k = k;
 		this.n = n;
 		this.secret = secret;
 	}
 	
-	public List<Integer> generatePartsOfSecret()
+	public List<BigInteger> generatePartsOfSecret()
 	{
-		List<Integer> list = new ArrayList<Integer>();
+		List<BigInteger> list = new ArrayList<BigInteger>();
 		
 		int [] randoms = generateKRandom();
-		for (int i = 0; i < randoms.length; i++)
-			System.out.println(randoms[i]);
+//		for (int i = 0; i < randoms.length; i++)
+//			System.out.println(randoms[i]);
 
 		for (int i = 1; i < n+1; i++)
 		{
-			int sum = 0;
+			BigInteger sum = new BigInteger("0");
 			for (int j = k - 1; j > 0; j--)
 			{
-				sum += randoms[j-1] * pow(i, j);
+				Double part = randoms[j-1] * pow(i, j);
+				Integer intPart = part.intValue();
+				sum = sum.add(new BigInteger(intPart.toString()));
 			}
-			sum += secret;
+			sum = sum.add(secret);
 			
 			
 			list.add(sum);
@@ -58,13 +62,19 @@ public class ShamirAlgo {
 		
 	}
 	
-	public long getSecret(List<Integer> listX, List<Integer> listY)
+	public BigInteger getSecret(List<Integer> listX, List<BigInteger> listIntY)
 	{
-		double secret=0;
+		List<BigDecimal> listY = new ArrayList<BigDecimal>();
+		for(BigInteger i : listIntY)
+		{
+			listY.add(new BigDecimal(i));
+		}
+		
+		BigDecimal secret = BigDecimal.valueOf(0.0);
 		for (int i = 0; i < listX.size(); i++)
 		{
 			int xCur = listX.get(i);
-			double lCur = 1;
+			double lCur = 1.0;
 			for (int j = 0; j < listX.size(); j++)
 			{
 				if (i==j)
@@ -74,8 +84,11 @@ public class ShamirAlgo {
 				int x = listX.get(j);
 				lCur *= (double)(-x)/((double)xCur - (double)x);
 			}
-			secret += lCur*listY.get(i);
+			secret = secret.add(listY.get(i).multiply(BigDecimal.valueOf(lCur)));
 		}
-		return Math.round(secret);
+		
+		BigInteger bi = secret.toBigInteger();
+		
+		return bi;
 	}
 }
