@@ -1,0 +1,1 @@
+copyright from https://github.com/Archistar/archistar-smc

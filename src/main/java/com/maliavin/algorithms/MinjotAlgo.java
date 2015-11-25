@@ -13,7 +13,7 @@ public class MinjotAlgo {
 	private BigInteger [] parts;
 	private BigInteger [] p;
 	private BigInteger startValue = new BigInteger(
-			"1");
+			"100000000000000000000000000000");
 
 	public MinjotAlgo(BigInteger secret, int k, int n)
 	{
@@ -27,15 +27,14 @@ public class MinjotAlgo {
 	
 	public void generateSecretParts()
 	{
-
-		
-		
 		p = getNPrimeNumbers(startValue);
 		BigInteger a = setA(p);
 		BigInteger b = setB(p);
 		
 		long count = 0l;
-		//System.out.println("secret = " + secret.toString());
+		
+		//System.out.println("secret = " + secret);
+		
 		while (secret.abs().compareTo(a.abs()) != -1 || secret.compareTo(b.abs()) != 1)
 		{
 			p = getNPrimeNumbers(p[0]);

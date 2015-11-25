@@ -14,6 +14,14 @@ import org.ejml.simple.SimpleMatrix;
 
 import Jama.Matrix;
 
+import at.archistar.crypto.RabinBenOrEngine;
+import at.archistar.crypto.data.Share;
+import at.archistar.crypto.decode.BerlekampWelchDecoderFactory;
+import at.archistar.crypto.math.gf256.GF256Factory;
+import at.archistar.crypto.random.BCDigestRandomSource;
+import at.archistar.crypto.secretsharing.KrawczykCSS;
+import at.archistar.crypto.symmetric.AESEncryptor;
+
 import com.maliavin.algorithms.BlakleyAlgo;
 import com.maliavin.algorithms.MinjotAlgo;
 import com.maliavin.algorithms.ShamirAlgo;
@@ -29,63 +37,25 @@ public class Main {
 		
 		String str = null;
 		try {
-			str = new String(Files.readAllBytes(Paths.get("d:/Dmitriy/3.txt")));
+			str = new String(Files.readAllBytes(Paths.get("d:/Dmitriy/4.txt")));
 		} catch (IOException e) {
 			System.out.println("read error - " + e.toString());
 		}
 		System.out.println("1");
 		
 		BigInteger bi = new BigInteger(str.getBytes());
-		
-		ShamirAlgo sa = new ShamirAlgo(bi, 3, 5);
-		List<BigInteger> list = sa.generatePartsOfSecret();
-		
-		long start = System.currentTimeMillis();
-		
-		List<Integer> listX = Arrays.asList(1,3,5);
-		List<BigInteger> listY = Arrays.asList(list.get(0),list.get(2),list.get(4));
-		
-		BigInteger sec = sa.getSecret(listX, listY);
-		
-		byte [] bytes = sec.toByteArray();
-		
-		String str2 = new String(bytes);
-		
-		long time = start - System.currentTimeMillis();
-		System.out.println("Time = " + time);
-		
-		try {
-			PrintWriter pw = new PrintWriter("d:/testShamir.txt");
-			pw.write(str2);
-			pw.close();
-			
-		} catch (FileNotFoundException e) {
-			System.out.println("write error - " + e.toString());
-		}
-		
-//		BlakleyAlgo ba = new BlakleyAlgo(bi, 3, 5);
-//		ba.generateParts();
+//		
+//		ShamirAlgo sa = new ShamirAlgo(bi, 3, 5);
+//		List<BigInteger> list = sa.generatePartsOfSecret();
 //		
 //		long start = System.currentTimeMillis();
-//		List<BigInteger> list1 = ba.getOnePartOfSecrets(1);
-//		List<BigInteger> list2 = ba.getOnePartOfSecrets(3);
-//		List<BigInteger> list3 = ba.getOnePartOfSecrets(4);
 //		
+//		List<Integer> listX = Arrays.asList(1,3,5);
+//		List<BigInteger> listY = Arrays.asList(list.get(0),list.get(2),list.get(4));
 //		
-//		BigInteger [][] a = createAMatrix(list1, list2, list3);
-//		BigInteger [] b = new BigInteger[3];
-//		b[0] = list1.get(list1.size()-1);
-//		b[1] = list2.get(list2.size()-1);
-//		b[2] = list3.get(list3.size()-1);
+//		BigInteger sec = sa.getSecret(listX, listY);
 //		
-//		BigInteger detMain = ba.determinant(a);
-//		BigInteger [][] mat1 = ba.createMatrix(a, b, 0);
-//			
-//		BigInteger det = ba.determinant(mat1);
-//		
-//		BigInteger secretBlackley = det.divide(detMain);
-//		
-//		byte [] bytes = secretBlackley.toByteArray();
+//		byte [] bytes = sec.toByteArray();
 //		
 //		String str2 = new String(bytes);
 //		
@@ -93,34 +63,74 @@ public class Main {
 //		System.out.println("Time = " + time);
 //		
 //		try {
-//			PrintWriter pw = new PrintWriter("d:/testBlackley.txt");
+//			PrintWriter pw = new PrintWriter("d:/testShamir.txt");
 //			pw.write(str2);
 //			pw.close();
 //			
 //		} catch (FileNotFoundException e) {
 //			System.out.println("write error - " + e.toString());
 //		}
+//***************************************************************************************************************		
+		BlakleyAlgo ba = new BlakleyAlgo(bi, 3, 5);
+		ba.generateParts();
+		
+		long start = System.currentTimeMillis();
+		List<BigInteger> list1 = ba.getOnePartOfSecrets(1);
+		List<BigInteger> list2 = ba.getOnePartOfSecrets(3);
+		List<BigInteger> list3 = ba.getOnePartOfSecrets(4);
+		
+		
+		BigInteger [][] a = createAMatrix(list1, list2, list3);
+		BigInteger [] b = new BigInteger[3];
+		b[0] = list1.get(list1.size()-1);
+		b[1] = list2.get(list2.size()-1);
+		b[2] = list3.get(list3.size()-1);
+		
+		BigInteger detMain = ba.determinant(a);
+		BigInteger [][] mat1 = ba.createMatrix(a, b, 0);
+			
+		BigInteger det = ba.determinant(mat1);
+		
+		BigInteger secretBlackley = det.divide(detMain);
+		
+		byte [] bytes = secretBlackley.toByteArray();
+		
+		String str2 = new String(bytes);
+		
+		long time = start - System.currentTimeMillis();
+		System.out.println("Time = " + time);
+		
+		try {
+			PrintWriter pw = new PrintWriter("d:/testBlackley.txt");
+			pw.write(str2);
+			pw.close();
+			
+		} catch (FileNotFoundException e) {
+			System.out.println("write error - " + e.toString());
+		}
 		
 		
 //		SimpleMatrix a = new SimpleMatrix(3,3);
-		
+//		
 //		setMatrixByList(0, a, list1);
 //		setMatrixByList(1, a, list2);
 //		setMatrixByList(2, a, list3);
-		
+//		
 //		System.out.println(a);
-		
-		//SimpleMatrix b = new SimpleMatrix(3, 1);
-		
+//		
+//		SimpleMatrix b = new SimpleMatrix(3, 1);
+//		
 //		b.set(0, 0, (-1) * list1.get(list1.size()-1));
 //		b.set(1, 0, (-1) * list2.get(list2.size()-1));
 //		b.set(2, 0, (-1) * list3.get(list3.size()-1));
-		
-		
-		
-		//SimpleMatrix x = a.solve(b);
+//		
+//		
+//		
+//		SimpleMatrix x = a.solve(b);
 //		
 //		System.out.println(x.toString());
+		
+//*****************************************************************************************************************
 		
 //		MinjotAlgo mj = new MinjotAlgo(bi, 5, 7);
 //		
@@ -148,7 +158,63 @@ public class Main {
 //		}
 //		
 //		System.out.println(bi.toString());
+//***************************************************************************************
+//		try {
+//			RabinBenOrEngine rabin = new RabinBenOrEngine(7, 5);
+//
+//			long start = System.currentTimeMillis();
+//
+//			Share[] shares = rabin.share(str.getBytes());
+//
+//			byte[] result = rabin.reconstruct(shares);
+//
+//			String str2 = new String(result);
+//
+//			long time = start - System.currentTimeMillis();
+//			System.out.println("Time = " + time);
+//
+//			try {
+//				PrintWriter pw = new PrintWriter("d:/RabinBenOrEngine.txt");
+//				pw.write(str2);
+//				pw.close();
+//
+//			} catch (FileNotFoundException e) {
+//				System.out.println("write error - " + e.toString());
+//			}
+//		} catch (Exception e) {
+//			System.out.println(e.toString());
+//		}
 		
+//***************************************************************************************
+//		try
+//		{
+//		KrawczykCSS krawczyk = new KrawczykCSS(7, 5,
+//				new BCDigestRandomSource(), new AESEncryptor(),
+//				new BerlekampWelchDecoderFactory(new GF256Factory()),
+//				new GF256Factory().createHelper());
+//		long start = System.currentTimeMillis();
+//
+//		Share[] shares = krawczyk.share(str.getBytes());
+//
+//		byte[] result = krawczyk.reconstruct(shares);
+//
+//		String str2 = new String(result);
+//
+//		long time = start - System.currentTimeMillis();
+//		System.out.println("Time = " + time);
+//
+//		try {
+//			PrintWriter pw = new PrintWriter("d:/KrawczykCSS.txt");
+//			pw.write(str2);
+//			pw.close();
+//
+//		} catch (FileNotFoundException e) {
+//			System.out.println("write error - " + e.toString());
+//		}
+//	} catch (Exception e) {
+//		System.out.println(e.toString());
+//	}
+
 	}
 	
 //	private static void setMatrixByList(int row, SimpleMatrix sm, List<Integer> list)
