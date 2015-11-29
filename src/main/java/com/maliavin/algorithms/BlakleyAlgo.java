@@ -99,7 +99,7 @@ public class BlakleyAlgo {
 	}
 	
 	public BigInteger determinant(BigInteger[][] matrix){ //method sig. takes a matrix (two dimensional array), returns determinant.
-		BigInteger sum=new BigInteger("0");; 
+		BigInteger sum=new BigInteger("0");
 		BigInteger s;
 	    if(matrix.length==1){  //bottom case of recursion. size 1 matrix determinant is itself.
 	      return(matrix[0][0]);
