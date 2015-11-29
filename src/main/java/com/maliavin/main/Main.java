@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -59,7 +60,7 @@ public class Main {
 	//Indices start at 0, so 4 specifies the pig.
 	final JComboBox schemesList = new JComboBox(schemesStrings);
 	schemesList.setSize(180, 25);
-	schemesList.setLocation(20, 120);
+	schemesList.setLocation(20, 160);
 	schemesList.setVisible(true);
 
 	frame.add(schemesList);
@@ -79,42 +80,42 @@ public class Main {
 	final JTextField t = new JTextField("3");
 	t.setVisible(true);
 	t.setSize(30, 25);
-	t.setLocation(250, 20);
+	t.setLocation(350, 20);
 	
 	frame.add(t);
 	
 	final JLabel labT = new JLabel("t = ");
 	labT.setVisible(true);
 	labT.setSize(25, 20);
-	labT.setLocation(220, 20);
+	labT.setLocation(320, 20);
 	
 	frame.add(labT);
 	
 	final JTextField n = new JTextField("5");
 	n.setVisible(true);
 	n.setSize(30, 25);
-	n.setLocation(250, 50);
+	n.setLocation(350, 50);
 	
 	frame.add(n);
 	
 	final JTextField tfFile = new JTextField();
 	tfFile.setVisible(true);
 	tfFile.setSize(100, 20);
-	tfFile.setLocation(10,30);
+	tfFile.setLocation(20,125);
 	
 	frame.add(tfFile);
 	
 	JLabel labFile = new JLabel("File");
 	labFile.setVisible(true);
 	labFile.setSize(50, 20);
-	labFile.setLocation(10, 10);
+	labFile.setLocation(20, 105);
 	
 	frame.add(labFile);
 	
 	final JLabel labN = new JLabel("n = ");
 	labN.setVisible(true);
 	labN.setSize(25, 20);
-	labN.setLocation(220, 50);
+	labN.setLocation(320, 50);
 	
 	frame.add(labN);
 	
@@ -151,6 +152,25 @@ public class Main {
 	});
 	
 	frame.add(butCharts);
+	
+	JTextField extShare = new JTextField("External scheme sharing command");
+	extShare.setVisible(true);
+	extShare.setSize(250, 25);
+	extShare.setLocation(20, 15);
+	frame.add(extShare);
+	
+	JTextField extRestore = new JTextField("External scheme restoring command");
+	extRestore.setVisible(true);
+	extRestore.setSize(250, 25);
+	extRestore.setLocation(20, 45);
+	frame.add(extRestore);
+	
+	JCheckBox useExt = new JCheckBox("Use external scheme");
+	useExt.setVisible(true);
+	useExt.setSelected(false);
+	useExt.setSize(150, 20);
+	useExt.setLocation(15, 80);
+	frame.add(useExt);
 
 	}
 	
